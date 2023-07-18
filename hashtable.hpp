@@ -1,5 +1,7 @@
 #include <iostream>
 #include <fstream>      // This will be used for reading/writing files later
+#include <sstream>      // Using sstream to parse file data
+#include <string>
 #include <list>
 #include <vector>
 #include <iterator>
@@ -19,6 +21,149 @@ using namespace cop4530;            // Custom namespace
 // *   4th Edition, Mark A. Weiss
 // *   Dr. David A. Gaitros.
 // ***********************************************
+
+template<typename K, typename V>
+HashTable<K, V>::HashTable(size_t size) : count(0) {
+    size = prime_below(size);
+    myTable.resize(size);
+}
+
+template<typename K, typename V>
+HashTable<K, V>::~HashTable() {
+    makeEmpty();
+}
+
+template<typename K, typename V>
+bool HashTable<K, V>::contains(const K& k) {
+    auto& l = myTable[myhash(k)];
+    for (const auto& kv : l) {
+        if (kv.first == k) {
+            return true;
+        }
+    }
+    return false;
+}
+
+template<typename K, typename V>
+bool HashTable<K, V>::match(const pair<K, V>& kv) {
+    auto& l = myTable[myhash(kv.first)];
+    for (const auto& pair : l) {
+        if (pair == kv) {
+            return true;
+        }
+    }
+    return false;
+}
+
+template<typename K, typename V>
+bool HashTable<K, V>::insert(const pair<K, V>& kv) {
+    auto& l = myTable[myhash(kv.first)];
+    for (auto& pair : l) {
+        if (pair.first == kv.first) {
+            pair.second = kv.second;
+            return true;
+        }
+    }
+    l.push_back(kv);
+    if (++count > myTable.size())
+        rehash();
+    return true;
+}
+
+template<typename K, typename V>
+bool HashTable<K, V>::insert(pair<K, V>&& kv) {
+    auto& l = myTable[myhash(kv.first)];
+    for (auto& pair : l) {
+        if (pair.first == kv.first) {
+            pair.second = move(kv.second);
+            return true;
+        }
+    }
+    l.push_back(move(kv));
+    if (++count > myTable.size())
+        rehash();
+    return true;
+}
+
+template<typename K, typename V>
+bool HashTable<K, V>::remove(const K& k) {
+    auto& l = myTable[myhash(k)];
+    for (auto it = l.begin(); it != l.end(); ++it) {
+        if (it->first == k) {
+            l.erase(it);
+            --count;
+            return true;
+        }
+    }
+    return false;
+}
+
+template<typename K, typename V>
+void HashTable<K, V>::clear() {
+    makeEmpty();
+}
+
+template<typename K, typename V>
+bool HashTable<K, V>::load(const char* filename) {
+    ifstream file(filename);
+    if (!file) {
+        cerr << "Error opening file: " << filename << endl;
+        return false;
+    }
+
+    makeEmpty();
+
+    string line;
+    while (getline(file, line)) {
+        istringstream iss(line);
+        K key;
+        V value;
+        if (!(iss >> key >> value)) {
+            cerr << "Error parsing line: " << line << endl;
+            return false;
+        }
+        insert(make_pair(key, value));
+    }
+
+    file.close();
+    return true;
+}
+
+template<typename K, typename V>
+void HashTable<K, V>::dump() {
+    for (const auto& list : myTable) {
+        for (const auto& pair : list) {
+            cout << pair.first << ":" << pair.second << "; ";
+        }
+        cout << endl;
+    }
+}
+
+template<typename K, typename V>
+bool HashTable<K, V>::write_to_file(const char* filename) {
+    ofstream file(filename);
+    if (!file) {
+        cerr << "Error opening file: " << filename << endl;
+        return false;
+    }
+
+    for (const auto& list : myTable) {
+        for (const auto& pair : list) {
+            file << pair.first << " " << pair.second << endl;
+        }
+    }
+
+    file.close();
+    return true;
+}
+
+template<typename K, typename V>
+void HashTable<K, V>::makeEmpty() {
+    for (auto& list : myTable) {
+        list.clear();
+    }
+    count = 0;
+}
 
 
 // ***********************************************
