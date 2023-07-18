@@ -28,8 +28,8 @@ using namespace std;
 // *   Dr. David A. Gaitros.
 // ***********************************************
 
-namespace cop4530
-{
+
+
     template<typename K, typename V>            // Template for our pairs
     class HashTable
     {
@@ -58,7 +58,7 @@ namespace cop4530
     };
 
 #include "hashtable.hpp"        // Bring in definition file
-}
+
 
 
 
