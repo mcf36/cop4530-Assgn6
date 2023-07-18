@@ -5,17 +5,39 @@
 #include <iterator>
 #include <utility>
 #include <functional>
-using namespace std;
 
-// returns largest prime number <= n or zero if input is too large
-// This is likely to be more efficient than prime_above(), because
-// it only needs a vector of size n
+using namespace std;
+using namespace cop4530;            // Custom namespace
+
+// ***********************************************
+// * Name: hashtable.hpp
+// * Description: Implements HashTable ADT class
+// *  from hashtable.h.
+// * Author: Mason Finnell
+// * Date: 17 July 2023
+// * References: Data Structures and Algorithms,
+// *   4th Edition, Mark A. Weiss
+// *   Dr. David A. Gaitros.
+// ***********************************************
+
+
+// ***********************************************
+// * Name: unsigned long prime_below()
+// * Description: Returns largest prime number <= n
+// *  or zero if input is too large. This is likely
+// *  to be more efficient than prime_above(), because
+// *  it only needs a vector of size n.
+// * Author: Dr. David A. Gaitros
+// * Date: 17 July 2023
+// * References: N/A
+// ***********************************************
+
 template <typename K, typename V>
 unsigned long HashTable<K, V>::prime_below(unsigned long n)
 {
   if (n > max_prime)
     {
-      std::cerr << "** input too large for prime_below()\n";
+      cerr << "** input too large for prime_below()\n";
       return 0;
     }
   if (n == max_prime)
@@ -24,12 +46,12 @@ unsigned long HashTable<K, V>::prime_below(unsigned long n)
     }
   if (n <= 1)
     {
-		std::cerr << "** input too small \n";
+		cerr << "** input too small \n";
       return 0;
     }
 
   // now: 2 <= n < max_prime
-  std::vector <unsigned long> v (n+1);
+  vector <unsigned long> v (n+1);
   setPrimes(v);
   while (n > 2)
     {
@@ -41,9 +63,18 @@ unsigned long HashTable<K, V>::prime_below(unsigned long n)
   return 2;
 }
 
-//Sets all prime number indexes to 1. Called by method prime_below(n) 
+
+// ***********************************************
+// * Name: void setPrimes(vector<unsigned long>& vprimes)
+// * Description: Sets all prime number indexes to 1.
+// *  Called by method prime_below(n).
+// * Author: Dr. David A. Gaitros
+// * Date: 17 July 2023
+// * References: N/A
+// ***********************************************
+
 template <typename K, typename V>
-void HashTable<K, V>::setPrimes(std::vector<unsigned long>& vprimes)
+void HashTable<K, V>::setPrimes(vector<unsigned long>& vprimes)
 {
   int i = 0;
   int j = 0;

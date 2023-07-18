@@ -7,13 +7,26 @@
 #include <iterator>
 #include <utility>
 #include <functional>
-using namespace std;
 // max_prime is used by the helpful functions provided
 // to you.
 static const unsigned int max_prime = 1301081;
 // the default_capacity is used if the initial capacity 
 // of the underlying vector of the hash table is zero. 
 static const unsigned int default_capacity = 11;
+
+using namespace std;
+
+// ***********************************************
+// * Name: hashtable.h
+// * Description: Declares HashTable class using
+// *  a VLP structure (vector, list, pair) from
+// *  the c++ STL.
+// * Author: Mason Finnell
+// * Date: 17 July 2023
+// * References: Data Structures and Algorithms,
+// *   4th Edition, Mark A. Weiss
+// *   Dr. David A. Gaitros.
+// ***********************************************
 
 namespace cop4530
 {
@@ -41,7 +54,7 @@ namespace cop4530
         void makeEmpty();                       // Delete all elements in hash table
         void rehash();                          // Rehash when # of elements in table greater than vector size
         unsigned long prime_below (unsigned long n);  // Given function to find largest prime below
-        void setPrimes(std::vector<unsigned long>& vprimes);
+        void setPrimes(vector<unsigned long>& vprimes);
     };
 
 #include "hashtable.hpp"        // Bring in definition file
