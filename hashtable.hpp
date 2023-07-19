@@ -204,12 +204,11 @@ bool HashTable<K, V>::remove(const K& k)
 {
     auto& l = myTable[myhash(k)];                      // Call myhash() to find table index with the list we want
 
-
-    for(auto& pair : l)                               // Range-based for loop
+    for(auto it = l.begin(); it != l.end(); ++it)     // Using iterator loop because we are deleting data
     {
-        if (pair.first == k)                          // Looking for key of pair to be deleted
+        if (it->first == k)                          // Looking for key of pair to be deleted
         {
-            l.erase(pair);
+            l.erase(it);
             --count;
             return true;
         }
@@ -301,9 +300,8 @@ void HashTable<K, V>::dump()
     {
         for (const auto& pair : list)                         // Nested range-based for loop; iterate through list
         {
-            cout << pair.first << ":" << pair.second << "; ";   // Output each pair with a ':' as delimiter
+            cout << pair.first << " : " << pair.second << endl;   // Output each pair with a ':' as delimiter
         }
-        cout << endl;
     }
 }
 
@@ -344,6 +342,12 @@ bool HashTable<K, V>::write_to_file(const char* filename)
     return true;
 }
 
+
+template<typename K, typename V>
+size_t HashTable<K, V>::size()
+{
+    return count;
+}
 
 // ***********************************************
 // * Name: void makeEmpty()

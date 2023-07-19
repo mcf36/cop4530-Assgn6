@@ -45,6 +45,7 @@ using namespace std;
         bool load(const char *filename);        // load the content of the file into Hash table
         void dump();                            // display all entries in the hash table.
         bool write_to_file(const char *filename);// write all elements in the hash table to a file
+        size_t size();                           // Returns number of entries in table
     private:
         size_t myhash(const K &k);              // Return index of vector where k should be stored
         size_t count = 0;
