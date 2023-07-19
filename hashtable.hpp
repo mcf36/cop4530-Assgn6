@@ -428,10 +428,19 @@ void cop4530::HashTable<K, V>::rehash()
 // ***********************************************
 
 template<typename K, typename V>
-size_t cop4530::HashTable<K, V>::myhash(const K& k)                  // fixme: Redo this hash function later
+size_t cop4530::HashTable<K, V>::myhash(const K& k)
 {
-    static hash<K> hf;
-    return hf(k) % myTable.size();
+   size_t tempHash = 0;                                 // Temporary value to be modified
+   size_t multi = 1;                                    // Multiplier will be increased throughout the loop
+
+   for(const auto& ch : k)                               // Range-based for loop iterating through each char
+   {
+        tempHash += static_cast<char>(ch)*17 + static_cast<char>(ch)*multi;     // Random complex arithmetic operation
+        multi *=19;                                                             // Multiply value with prime number
+   }
+
+   tempHash = tempHash % myTable.size();                        // Modulo with table size to determine bucket
+   return tempHash;
 }
 
 // ***********************************************

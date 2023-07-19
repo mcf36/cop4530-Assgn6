@@ -48,9 +48,8 @@ namespace cop4530 {
     private:
         size_t myhash(const K &k);              // Return index of vector where k should be stored
         size_t count = 0;
-        vector<list < pair<K, V>>>
-        myTable;       // Vector list of pairs representing hash table
-        size_t vector_size;                     // Tracking how big our table (vector) is
+        vector<list < pair<K, V>>> myTable;       // Vector list of pairs representing hash table
+
         // Private helper functions:
         void makeEmpty();                       // Delete all elements in hash table
         void rehash();                          // Rehash when # of elements in table greater than vector size
