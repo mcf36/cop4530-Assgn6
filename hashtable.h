@@ -46,7 +46,7 @@ using namespace std;
         void dump();                            // display all entries in the hash table.
         bool write_to_file(const char *filename);// write all elements in the hash table to a file
     private:
-        size_t myHash(const K &k);              // Return index of vector where k should be stored
+        size_t myhash(const K &k);              // Return index of vector where k should be stored
         size_t count = 0;
         vector<list<pair<K,V>>> myTable;       // Vector list of pairs representing hash table
         size_t vector_size;                     // Tracking how big our table (vector) is

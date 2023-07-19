@@ -216,6 +216,30 @@ void HashTable<K, V>::makeEmpty()
     count = 0;                          // Reset count
 }
 
+template<typename K, typename V>
+void HashTable<K, V>::rehash()
+{
+    vector<list<pair<K, V>>> oldTable = myTable;            // Temp copy of current table
+
+    myTable.resize(prime_below(2 * myTable.size()));     // Double current table's size
+
+    this->makeEmpty();                                     // Clear table after resizing it
+
+    for (const auto& list : oldTable)                      // Range-based for loop using old table as iterator
+    {
+        for (const auto& pair : list)                      // Nested range-based for loop iterating through each old list
+        {
+            this->insert(pair);                           // Insert each old pair into new table
+        }
+    }
+}
+
+template<typename K, typename V>
+size_t HashTable<K, V>::myhash(const K& k)                  // fixme: Redo this hash function later
+{
+    static hash<K> hf;
+    return hf(k) % myTable.size();
+}
 
 // ***********************************************
 // * Name: unsigned long prime_below()
