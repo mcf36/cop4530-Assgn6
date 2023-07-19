@@ -343,6 +343,17 @@ bool cop4530::HashTable<K, V>::write_to_file(const char* filename)
 }
 
 
+// ***********************************************
+// * Name: size_t size()
+// * Description: Not required for assignment. Used
+// *  to check size after inserting/deleting pairs.
+// * Author: Mason Finnell
+// * Date: 19 July 2023
+// * References: Data Structures and Algorithms,
+// *   4th Edition, Mark A. Weiss
+// *   Dr. David A. Gaitros.
+// ***********************************************
+
 template<typename K, typename V>
 size_t cop4530::HashTable<K, V>::size()
 {
