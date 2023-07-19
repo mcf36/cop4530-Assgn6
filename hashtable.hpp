@@ -23,21 +23,29 @@ using namespace std;
 // ***********************************************
 
 template<typename K, typename V>
-HashTable<K, V>::HashTable(size_t size) : count(0) {
-    size = prime_below(size);
-    myTable.resize(size);
+HashTable<K, V>::HashTable(size_t size)
+{
+    count = 0;
+
+    size_t tempsize = prime_below(size);
+    myTable.resize(tempsize);
 }
 
 template<typename K, typename V>
-HashTable<K, V>::~HashTable() {
-    makeEmpty();
+HashTable<K, V>::~HashTable()
+{
+    this->makeEmpty();              // Call user-defined clear function
 }
 
 template<typename K, typename V>
-bool HashTable<K, V>::contains(const K& k) {
-    auto& l = myTable[myhash(k)];
-    for (const auto& kv : l) {
-        if (kv.first == k) {
+bool HashTable<K, V>::contains(const K& k)
+{
+    auto& l = myTable[myhash(k)];               // Find vector index using myhash() function and iterate through it
+
+    for (const auto& kv : l)                    // range-based for loop
+    {
+        if (kv.first == k)                      // Check keys (ordered first in pair); return true if found
+        {
             return true;
         }
     }
@@ -45,10 +53,14 @@ bool HashTable<K, V>::contains(const K& k) {
 }
 
 template<typename K, typename V>
-bool HashTable<K, V>::match(const pair<K, V>& kv) {
+bool HashTable<K, V>::match(const pair<K, V>& kv)
+{
     auto& l = myTable[myhash(kv.first)];
-    for (const auto& pair : l) {
-        if (pair == kv) {
+
+    for (const auto& pair : l)
+    {
+        if (pair == kv)
+        {
             return true;
         }
     }
@@ -56,113 +68,152 @@ bool HashTable<K, V>::match(const pair<K, V>& kv) {
 }
 
 template<typename K, typename V>
-bool HashTable<K, V>::insert(const pair<K, V>& kv) {
-    auto& l = myTable[myhash(kv.first)];
-    for (auto& pair : l) {
-        if (pair.first == kv.first) {
-            pair.second = kv.second;
+bool HashTable<K, V>::insert(const pair<K, V>& kv)
+{
+    auto& l = myTable[myhash(kv.first)];                // Call myhash() to find table index with the list we want
+
+    for (auto& pair : l)                                // Range-based for loop
+    {
+        if (pair.first == kv.first)                     // Checking if we already have the key stored
+        {
+            if(pair.second == kv.second) return false;  // If it's already in the hash table, return false
+
+            pair.second = kv.second;                    // If only keys are identical, update the value and return true
             return true;
         }
     }
-    l.push_back(kv);
-    if (++count > myTable.size())
-        rehash();
+    l.push_back(kv);                                    // If key isn't present, add pair to the END of list
+
+    ++count;                                           // Update private count of pairs
+    if (count > myTable.size()) rehash();              // Checking if we need to rehash all pairs or not
+
     return true;
 }
 
 template<typename K, typename V>
-bool HashTable<K, V>::insert(pair<K, V>&& kv) {
-    auto& l = myTable[myhash(kv.first)];
-    for (auto& pair : l) {
-        if (pair.first == kv.first) {
-            pair.second = move(kv.second);
+bool HashTable<K, V>::insert(pair<K, V>&& kv)
+{
+    auto& l = myTable[myhash(kv.first)];                 // Call myhash() to find table index with the list we want
+
+    for (auto& pair : l)                                 // Range-based for loop
+    {
+        if (pair.first == kv.first)                     // Checking if we already have the key stored
+        {
+            if(pair.second == kv.second) return false;  // If it's already in the hash table, return false
+
+            pair.second = move(kv.second);              // Update value with std::move
             return true;
         }
     }
-    l.push_back(move(kv));
-    if (++count > myTable.size())
-        rehash();
+    l.push_back(move(kv));                             // If key isn't present, move pair to the END of list
+
+    ++count;                                           // Update private count of pairs
+    if (count > myTable.size()) rehash();              // Checking if we need to rehash all pairs or not
+
     return true;
 }
 
 template<typename K, typename V>
-bool HashTable<K, V>::remove(const K& k) {
-    auto& l = myTable[myhash(k)];
-    for (auto it = l.begin(); it != l.end(); ++it) {
-        if (it->first == k) {
-            l.erase(it);
+bool HashTable<K, V>::remove(const K& k)
+{
+    auto& l = myTable[myhash(k)];                      // Call myhash() to find table index with the list we want
+
+
+    for(auto& pair : l)                               // Range-based for loop
+    {
+        if (pair.first == k)                          // Looking for key of pair to be deleted
+        {
+            l.erase(pair);
             --count;
             return true;
         }
     }
-    return false;
+    return false;                                       // If we couldn't find pair to delete, return false
 }
 
 template<typename K, typename V>
-void HashTable<K, V>::clear() {
-    makeEmpty();
+void HashTable<K, V>::clear()
+{
+    makeEmpty();                                        // Call private member to empty vector table
 }
 
 template<typename K, typename V>
-bool HashTable<K, V>::load(const char* filename) {
-    ifstream file(filename);
-    if (!file) {
+bool HashTable<K, V>::load(const char* filename)
+{
+    ifstream file(filename);                         // Using ifstream to parse file data
+
+    if (!file)                                          // If we cannot open it for any reason, return error
+    {
         cerr << "Error opening file: " << filename << endl;
         return false;
     }
 
-    makeEmpty();
+    this->makeEmpty();                                        // Clear our table before adding to it
 
     string line;
-    while (getline(file, line)) {
-        istringstream iss(line);
+    while (getline(file, line))                        // Parsing data line-by-line
+    {
+        istringstream iss(line);                          // Temp variables that will reset each line
         K key;
         V value;
-        if (!(iss >> key >> value)) {
+
+        if (!(iss >> key >> value))                           // If we cannot parse line for any reason, return error
+        {
             cerr << "Error parsing line: " << line << endl;
             return false;
         }
-        insert(make_pair(key, value));
+        this->insert(make_pair(key, value));            // Call user-defined method to add to hash table
     }
 
-    file.close();
+    file.close();                                             // If file is parsed correctly, close it and return true
     return true;
 }
 
 template<typename K, typename V>
-void HashTable<K, V>::dump() {
-    for (const auto& list : myTable) {
-        for (const auto& pair : list) {
-            cout << pair.first << ":" << pair.second << "; ";
+void HashTable<K, V>::dump()
+{
+    for (const auto& list : myTable)                          // Range-based for loop; iterate through vector
+    {
+        for (const auto& pair : list)                         // Nested range-based for loop; iterate through list
+        {
+            cout << pair.first << ":" << pair.second << "; ";   // Output each pair with a ':' as delimiter
         }
         cout << endl;
     }
 }
 
 template<typename K, typename V>
-bool HashTable<K, V>::write_to_file(const char* filename) {
-    ofstream file(filename);
-    if (!file) {
+bool HashTable<K, V>::write_to_file(const char* filename)
+{
+    ofstream file(filename);                                // Use ofstream to create file
+
+    if (!file)                                                // If we cannot open it for any reason, return error
+    {
         cerr << "Error opening file: " << filename << endl;
         return false;
     }
 
-    for (const auto& list : myTable) {
-        for (const auto& pair : list) {
-            file << pair.first << " " << pair.second << endl;
+    for (const auto& list : myTable)                        // Range-based for loop; iterate through vector
+    {
+        for (const auto& pair : list)                       // Nested range-based for loop; iterate through list
+        {
+            file << pair.first << " " << pair.second << endl;   // Write one pair per line with " " as delimiter
         }
     }
 
-    file.close();
+    file.close();                                           // If file is written correctly, close it and return true
     return true;
 }
 
 template<typename K, typename V>
-void HashTable<K, V>::makeEmpty() {
-    for (auto& list : myTable) {
-        list.clear();
+void HashTable<K, V>::makeEmpty()
+{
+    for (auto& list : myTable)          // Range-based for loop
+    {
+        list.clear();                   // Use std clear() method to vacate the list
     }
-    count = 0;
+
+    count = 0;                          // Reset count
 }
 
 
