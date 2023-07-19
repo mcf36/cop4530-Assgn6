@@ -35,7 +35,7 @@ using namespace std;
 // ***********************************************
 
 template<typename K, typename V>
-HashTable<K, V>::HashTable(size_t size)
+cop4530::HashTable<K, V>::HashTable(size_t size)
 {
     count = 0;
 
@@ -56,7 +56,7 @@ HashTable<K, V>::HashTable(size_t size)
 // ***********************************************
 
 template<typename K, typename V>
-HashTable<K, V>::~HashTable()
+cop4530::HashTable<K, V>::~HashTable()
 {
     this->makeEmpty();              // Call user-defined clear function
 }
@@ -75,7 +75,7 @@ HashTable<K, V>::~HashTable()
 // ***********************************************
 
 template<typename K, typename V>
-bool HashTable<K, V>::contains(const K& k)
+bool cop4530::HashTable<K, V>::contains(const K& k)
 {
     auto& l = myTable[myhash(k)];               // Find vector index using myhash() function and iterate through it
 
@@ -103,7 +103,7 @@ bool HashTable<K, V>::contains(const K& k)
 // ***********************************************
 
 template<typename K, typename V>
-bool HashTable<K, V>::match(const pair<K, V>& kv)
+bool cop4530::HashTable<K, V>::match(const pair<K, V>& kv)
 {
     auto& l = myTable[myhash(kv.first)];
 
@@ -130,7 +130,7 @@ bool HashTable<K, V>::match(const pair<K, V>& kv)
 // ***********************************************
 
 template<typename K, typename V>
-bool HashTable<K, V>::insert(const pair<K, V>& kv)
+bool cop4530::HashTable<K, V>::insert(const pair<K, V>& kv)
 {
     auto& l = myTable[myhash(kv.first)];                // Call myhash() to find table index with the list we want
 
@@ -164,7 +164,7 @@ bool HashTable<K, V>::insert(const pair<K, V>& kv)
 // ***********************************************
 
 template<typename K, typename V>
-bool HashTable<K, V>::insert(pair<K, V>&& kv)
+bool cop4530::HashTable<K, V>::insert(pair<K, V>&& kv)
 {
     auto& l = myTable[myhash(kv.first)];                 // Call myhash() to find table index with the list we want
 
@@ -200,7 +200,7 @@ bool HashTable<K, V>::insert(pair<K, V>&& kv)
 // ***********************************************
 
 template<typename K, typename V>
-bool HashTable<K, V>::remove(const K& k)
+bool cop4530::HashTable<K, V>::remove(const K& k)
 {
     auto& l = myTable[myhash(k)];                      // Call myhash() to find table index with the list we want
 
@@ -229,7 +229,7 @@ bool HashTable<K, V>::remove(const K& k)
 // ***********************************************
 
 template<typename K, typename V>
-void HashTable<K, V>::clear()
+void cop4530::HashTable<K, V>::clear()
 {
     makeEmpty();                                        // Call private member to empty vector table
 }
@@ -249,7 +249,7 @@ void HashTable<K, V>::clear()
 // ***********************************************
 
 template<typename K, typename V>
-bool HashTable<K, V>::load(const char* filename)
+bool cop4530::HashTable<K, V>::load(const char* filename)
 {
     ifstream file(filename);                         // Using ifstream to parse file data
 
@@ -294,7 +294,7 @@ bool HashTable<K, V>::load(const char* filename)
 // ***********************************************
 
 template<typename K, typename V>
-void HashTable<K, V>::dump()
+void cop4530::HashTable<K, V>::dump()
 {
     for (const auto& list : myTable)                          // Range-based for loop; iterate through vector
     {
@@ -320,7 +320,7 @@ void HashTable<K, V>::dump()
 // ***********************************************
 
 template<typename K, typename V>
-bool HashTable<K, V>::write_to_file(const char* filename)
+bool cop4530::HashTable<K, V>::write_to_file(const char* filename)
 {
     ofstream file(filename);                                // Use ofstream to create file
 
@@ -344,7 +344,7 @@ bool HashTable<K, V>::write_to_file(const char* filename)
 
 
 template<typename K, typename V>
-size_t HashTable<K, V>::size()
+size_t cop4530::HashTable<K, V>::size()
 {
     return count;
 }
@@ -361,7 +361,7 @@ size_t HashTable<K, V>::size()
 // ***********************************************
 
 template<typename K, typename V>
-void HashTable<K, V>::makeEmpty()
+void cop4530::HashTable<K, V>::makeEmpty()
 {
     for (auto& list : myTable)          // Range-based for loop iterating through vector
     {
@@ -385,7 +385,7 @@ void HashTable<K, V>::makeEmpty()
 // ***********************************************
 
 template<typename K, typename V>
-void HashTable<K, V>::rehash()
+void cop4530::HashTable<K, V>::rehash()
 {
     vector<list<pair<K, V>>> oldTable = myTable;            // Temp copy of current table
 
@@ -417,7 +417,7 @@ void HashTable<K, V>::rehash()
 // ***********************************************
 
 template<typename K, typename V>
-size_t HashTable<K, V>::myhash(const K& k)                  // fixme: Redo this hash function later
+size_t cop4530::HashTable<K, V>::myhash(const K& k)                  // fixme: Redo this hash function later
 {
     static hash<K> hf;
     return hf(k) % myTable.size();
@@ -435,7 +435,7 @@ size_t HashTable<K, V>::myhash(const K& k)                  // fixme: Redo this 
 // ***********************************************
 
 template <typename K, typename V>
-unsigned long HashTable<K, V>::prime_below(unsigned long n)
+unsigned long cop4530::HashTable<K, V>::prime_below(unsigned long n)
 {
   if (n > max_prime)
     {
@@ -476,7 +476,7 @@ unsigned long HashTable<K, V>::prime_below(unsigned long n)
 // ***********************************************
 
 template <typename K, typename V>
-void HashTable<K, V>::setPrimes(vector<unsigned long>& vprimes)
+void cop4530::HashTable<K, V>::setPrimes(vector<unsigned long>& vprimes)
 {
   int i = 0;
   int j = 0;

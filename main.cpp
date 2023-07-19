@@ -3,6 +3,7 @@
 #include "hashtable.h"
 
 using namespace std;
+using namespace cop4530;
 
 int main()
 {
