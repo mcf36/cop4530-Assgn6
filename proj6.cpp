@@ -3,7 +3,7 @@
 
 using namespace std;
 
-void Menu()
+void Menu()                                             // Displays input options to std output
 {
   cout << "\n\n";
   cout << "l - Load From File" << endl;
@@ -21,6 +21,8 @@ void Menu()
 int main ()
 {
     PassServer myServer(10);
+
+    if(myServer.addUser(make_pair("Mason", "password"))) cout << "Successfully added user." << endl;
 
     cout << "Test. " << endl;
 

@@ -33,6 +33,7 @@ namespace cop4530 {
     template<typename K, typename V>            // Template for our pairs
     class HashTable {
     public:
+
         HashTable(size_t size = 101);           // Default constructor; default size is 101
         ~HashTable();                           // Destructor
         bool contains(const K &k);              // check if key k is in the hash table.

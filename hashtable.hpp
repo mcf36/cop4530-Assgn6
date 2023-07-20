@@ -39,7 +39,7 @@ cop4530::HashTable<K, V>::HashTable(size_t size)
 {
     count = 0;
 
-    size_t tempsize = prime_below(size);
+    size_t tempsize = prime_below(size);        // Call prime_below() method to find largest prime of parameter
     myTable.resize(tempsize);
 }
 
@@ -58,7 +58,7 @@ cop4530::HashTable<K, V>::HashTable(size_t size)
 template<typename K, typename V>
 cop4530::HashTable<K, V>::~HashTable()
 {
-    this->makeEmpty();              // Call user-defined clear function
+    this->makeEmpty();                           // Call user-defined clear function
 }
 
 
@@ -92,8 +92,8 @@ bool cop4530::HashTable<K, V>::contains(const K& k)
 
 // ***********************************************
 // * Name: bool match(const pair<K,V>& kv)
-// * Description: Returns true if the key AND value
-// *  parameters are contained somewhere within the
+// * Description: Returns true if the pair
+// *  parameter is contained somewhere within the
 // *  hash table, false otherwise.
 // * Author: Mason Finnell
 // * Date: 17 July 2023
@@ -105,11 +105,11 @@ bool cop4530::HashTable<K, V>::contains(const K& k)
 template<typename K, typename V>
 bool cop4530::HashTable<K, V>::match(const pair<K, V>& kv)
 {
-    auto& l = myTable[myhash(kv.first)];
+    auto& l = myTable[myhash(kv.first)];                    // Finding key in hashtable
 
-    for (const auto& pair : l)
+    for (const auto& pair : l)                                 // Range-based for loop iterating through list
     {
-        if (pair == kv)
+        if (pair == kv)                                        // If the pair is in the list, return true
         {
             return true;
         }
