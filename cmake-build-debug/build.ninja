@@ -49,8 +49,8 @@ cmake_ninja_workdir = C$:/Users/Mason/Desktop/COP4530/cop4530-Assgn6/cmake-build
 
 build cmake_object_order_depends_target_Assgn6: phony || CMakeFiles/Assgn6.dir
 
-build CMakeFiles/Assgn6.dir/main.cpp.obj: CXX_COMPILER__Assgn6_Debug C$:/Users/Mason/Desktop/COP4530/cop4530-Assgn6/main.cpp || cmake_object_order_depends_target_Assgn6
-  DEP_FILE = CMakeFiles\Assgn6.dir\main.cpp.obj.d
+build CMakeFiles/Assgn6.dir/proj6.cpp.obj: CXX_COMPILER__Assgn6_Debug C$:/Users/Mason/Desktop/COP4530/cop4530-Assgn6/proj6.cpp || cmake_object_order_depends_target_Assgn6
+  DEP_FILE = CMakeFiles\Assgn6.dir\proj6.cpp.obj.d
   FLAGS = -g -fdiagnostics-color=always -std=gnu++11
   OBJECT_DIR = CMakeFiles\Assgn6.dir
   OBJECT_FILE_DIR = CMakeFiles\Assgn6.dir
@@ -63,7 +63,7 @@ build CMakeFiles/Assgn6.dir/main.cpp.obj: CXX_COMPILER__Assgn6_Debug C$:/Users/M
 #############################################
 # Link the executable Assgn6.exe
 
-build Assgn6.exe: CXX_EXECUTABLE_LINKER__Assgn6_Debug CMakeFiles/Assgn6.dir/main.cpp.obj
+build Assgn6.exe: CXX_EXECUTABLE_LINKER__Assgn6_Debug CMakeFiles/Assgn6.dir/proj6.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\Assgn6.dir

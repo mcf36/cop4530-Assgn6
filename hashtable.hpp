@@ -174,11 +174,11 @@ bool cop4530::HashTable<K, V>::insert(pair<K, V>&& kv)
         {
             if(pair.second == kv.second) return false;  // If it's already in the hash table, return false
 
-            pair.second = move(kv.second);              // Update value with std::move
+            pair.second = std::move(kv.second);              // Update value with std::move
             return true;
         }
     }
-    l.push_back(move(kv));                             // If key isn't present, move pair to the END of list
+    l.push_back(std::move(kv));                             // If key isn't present, move pair to the END of list
 
     ++count;                                           // Update private count of pairs
     if (count > myTable.size()) rehash();              // Checking if we need to rehash all pairs or not

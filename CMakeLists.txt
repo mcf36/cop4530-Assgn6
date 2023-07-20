@@ -3,4 +3,4 @@ project(Assgn6)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(Assgn6 main.cpp passserver.h)
+add_executable(Assgn6 proj6.cpp)
