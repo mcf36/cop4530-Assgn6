@@ -203,11 +203,21 @@ bool PassServer::find(const string& user)
 void PassServer::dump()                                     // fixme: needs testing and block comments
 {
     // We will need to use write_to_file() method in order to decrypt the passwords before displaying
-    if(!this->write_to_file("testFile.txt")) return;  // write encrypted data to a temporary file
+    if(!this->write_to_file("testFile.txt"))  // write encrypted data to a temporary file
+    {
+        cout << "ERROR: Could not write to file." << endl;
+        return;
+    }
+else {
+        if (!theTable->load("testFile.txt"))       // Load unencrypted file into PassServer
+        {
+            cout << "ERROR: Could not load file." << endl;
+            return;
+        } else {
+            theTable->dump();                                     // Use HashTable method to dump unencrypted data
+        }
+    }
 
-    if(!this->load("testFile.txt")) return;       // Load unencrypted file into PassServer
-
-    theTable->dump();                                     // Use HashTable method to dump unencrypted data
 }
 
 // ***********************************************
@@ -227,13 +237,11 @@ size_t PassServer::size()
 
 bool PassServer::write_to_file(const char* filename)           // fixme: needs testing and block comments
 {
-    theTable->write_to_file(filename);                         // Write encrypted data to passwords
+    theTable->write_to_file("temp.txt");                         // Write encrypted data to passwords
 
     theTable->clear();                                         // Clear table after data is written
 
-    // Note: Below is a modification of the load() function that allows us to decrypt passwords before writing again
-
-    ifstream file(filename);                                // Use ofstream to create file
+    ifstream file("temp.txt");                                // Use ifstream to create file
 
     if (!file)                                                // If we cannot open it for any reason, return error
     {
@@ -254,13 +262,13 @@ bool PassServer::write_to_file(const char* filename)           // fixme: needs t
             return false;
         }
         value = decrypt(value);                             // DECRYPT value
-
         theTable->insert(make_pair(key, value));      // Call user-defined method to add to hash table
     }
-    file.close();                                             // If file is parsed correctly, close it
+    file.close();           // If file is parsed correctly, close it
 
     // Now, all passwords on the system should be decrypted
     theTable->write_to_file(filename);                       // Overwrite previous output file with unencrypted passwords
+
     return true;
 }
 
@@ -277,8 +285,8 @@ bool PassServer::write_to_file(const char* filename)           // fixme: needs t
 
 string PassServer::encrypt(const string& str)
 {
-    BYTE valueIn[100];                                                    // Temp BYTE values for encryption
-    BYTE valueOut[100];
+    BYTE valueIn[str.size()];                                                    // Temp BYTE values for encryption
+    BYTE valueOut[str.size()];
 
     strcpy(valueIn, str.c_str());                             // Copy unencrypted password to BYTE array
     base64_encode(valueIn, valueOut, strlen(valueIn), 1);   // Encode password
@@ -301,8 +309,8 @@ string PassServer::encrypt(const string& str)
 
 string PassServer::decrypt(const string& str)
 {
-    BYTE valueIn[100];                                                   // Temp BYTE values for decryption
-    BYTE valueOut[100];
+    BYTE valueIn[str.size()];                                                  // Temp BYTE values for decryption
+    BYTE valueOut[str.size()];
 
     strcpy(valueIn, str.c_str());                            // Copy unencrypted password to BYTE array
     base64_decode(valueIn, valueOut, strlen(valueIn));   // Decode password

@@ -20,11 +20,22 @@ void Menu()                                             // Displays input option
 
 int main ()
 {
-    PassServer myServer(10);
+    PassServer myServer;
 
-    if(myServer.addUser(make_pair("Mason", "password"))) cout << "Successfully added user." << endl;
+    if(myServer.addUser(make_pair("Mason", "password0"))) cout << "Successfully added user." << endl;
 
-    cout << "Test. " << endl;
+    if(myServer.find("Mason")) cout << "Successfully found user." << endl;
+
+    myServer.addUser(make_pair("John", "password1"));
+    myServer.addUser(make_pair("Joe", "password2"));
+    myServer.addUser(make_pair("Sal", "password3"));
+    myServer.addUser(make_pair("Quinn", "password4"));
+    myServer.addUser(make_pair("Richard", "password5"));
+
+   // myServer.write_to_file("tempOut.txt");
+    myServer.dump();
+
+    cout << "Routine complete. " << endl;
 
     return 0;
 }
