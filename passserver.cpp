@@ -9,8 +9,6 @@
 #include <functional>
 #include "base64-1.cpp"
 
-
-
 // ***********************************************
 // * Name: passserver.cpp
 // * Description: Implements members defined in
@@ -38,7 +36,7 @@ using namespace std;
 
 PassServer::PassServer(size_t size)
 {
-    theTable = new HashTable<string, string>(size);     // Dynamically allocate new hash table
+    theTable = new cop4530::HashTable<string, string>(size);     // Dynamically allocate new hash table
 }
 
 
@@ -107,7 +105,7 @@ bool PassServer::load(const char* filename)
 
 
 // ***********************************************
-// * Name: addUser(pair<string, string>& kv)
+// * Name: bool addUser(pair<string, string>& kv)
 // * Description: Reads in user/pass string pair,
 // *  encrypts the password using the given base64
 // *  files, and adds the pair to the server.
@@ -127,7 +125,7 @@ bool PassServer::addUser(pair<string, string>& kv)
 
 
 // ***********************************************
-// * Name: addUser(pair<string, string>&& kv)
+// * Name: bool addUser(pair<string, string>&& kv)
 // * Description: Move version of addUser().
 // * Author: Mason Finnell
 // * Date: 19 July 2023
@@ -144,7 +142,7 @@ bool PassServer::addUser(pair<string, string>&& kv)
 
 
 // ***********************************************
-// * Name: removeUser(const string& k)
+// * Name: bool removeUser(const string& k)
 // * Description: Removes a user/password pair from
 // *  the server.
 // * Author: Mason Finnell
@@ -161,7 +159,7 @@ bool PassServer::removeUser(const string& k)
 
 
 // ***********************************************
-// * Name: changePassword()
+// * Name: bool changePassword()
 // * Description: Changes a password within the
 // *  system. If it is not present or unsuccessfully
 // *  inserted, return false and true otherwise.
@@ -185,14 +183,31 @@ bool PassServer::changePassword(const pair<string, string>& p, const string& new
     else return true;                                   // If everything executed properly, return true
 }
 
+
+// ***********************************************
+// * Name: bool find(const string& user)
+// * Description: Returns true if the user is in
+// *  the system, false otherwise.
+// * Author: Mason Finnell
+// * Date: 19 July 2023
+// * References: Data Structures and Algorithms,
+// *   4th Edition, Mark A. Weiss
+// *   Dr. David A. Gaitros.
+// ***********************************************
+
 bool PassServer::find(const string& user)
 {
     return theTable->contains(user);
 }
 
-void PassServer::dump()
+void PassServer::dump()                                     // fixme: needs testing and block comments
 {
-    // Implement showing the structure and contents of the hash table
+    // We will need to use write_to_file() method in order to decrypt the passwords before displaying
+    if(!this->write_to_file("testFile.txt")) return;  // write encrypted data to a temporary file
+
+    if(!this->load("testFile.txt")) return;       // Load unencrypted file into PassServer
+
+    theTable->dump();                                     // Use HashTable method to dump unencrypted data
 }
 
 // ***********************************************
@@ -210,10 +225,43 @@ size_t PassServer::size()
     return theTable->size();
 }
 
-bool PassServer::write_to_file(const char* filename)
+bool PassServer::write_to_file(const char* filename)           // fixme: needs testing and block comments
 {
-    // Implement un-encrypting the password and saving username/password combination to a file
-    // Return true if successful, false otherwise
+    theTable->write_to_file(filename);                         // Write encrypted data to passwords
+
+    theTable->clear();                                         // Clear table after data is written
+
+    // Note: Below is a modification of the load() function that allows us to decrypt passwords before writing again
+
+    ifstream file(filename);                                // Use ofstream to create file
+
+    if (!file)                                                // If we cannot open it for any reason, return error
+    {
+        cerr << "Error opening file: " << filename << endl;
+        return false;
+    }
+
+    string line;
+    while (getline(file, line))                        // Parsing data line-by-line
+    {
+        istringstream iss(line);                          // Temp variables that will reset each line
+        string key;
+        string value;
+
+        if (!(iss >> key >> value))                           // If we cannot parse line for any reason, return error
+        {
+            cerr << "Error parsing line: " << line << endl;
+            return false;
+        }
+        value = decrypt(value);                             // DECRYPT value
+
+        theTable->insert(make_pair(key, value));      // Call user-defined method to add to hash table
+    }
+    file.close();                                             // If file is parsed correctly, close it
+
+    // Now, all passwords on the system should be decrypted
+    theTable->write_to_file(filename);                       // Overwrite previous output file with unencrypted passwords
+    return true;
 }
 
 // ***********************************************

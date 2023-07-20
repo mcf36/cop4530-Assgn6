@@ -2,10 +2,11 @@
 #define ASSGN6_PASSSERVER_H
 
 #include <string>
+#include <iterator>
 #include "hashtable.h"                  // Hash table template file
 
 using namespace std;
-using namespace cop4530;
+
 
 // ***********************************************
 // * Name: passserver.h
@@ -36,7 +37,7 @@ public:
 private:
     string encrypt(const string& str);                  // encrypt using base64 encoding files given
     string decrypt(const string& str);                  // decrypt using base64 encoding files given (not required)
-    HashTable<string, string>* theTable;                 // Hash table ptr containing string pairs
+    cop4530::HashTable<string, string>* theTable;                 // Hash table ptr containing string pairs
 };
 
 #include "passserver.cpp"
