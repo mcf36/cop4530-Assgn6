@@ -202,6 +202,8 @@ bool PassServer::find(const string& user)
 
 void PassServer::dump()                                     // fixme: needs testing and block comments
 {
+    cop4530::HashTable<string, string> decTable(theTable->size());   // Temp table to hold unencrypted values
+
     // We will need to use write_to_file() method in order to decrypt the passwords before displaying
     if(!this->write_to_file("testFile.txt"))  // write encrypted data to a temporary file
     {
@@ -209,15 +211,14 @@ void PassServer::dump()                                     // fixme: needs test
         return;
     }
 else {
-        if (!theTable->load("testFile.txt"))       // Load unencrypted file into PassServer
+        if (!decTable.load("testFile.txt"))       // Load unencrypted file into PassServer
         {
             cout << "ERROR: Could not load file." << endl;
             return;
         } else {
-            theTable->dump();                                     // Use HashTable method to dump unencrypted data
+            decTable.dump();                                     // Use HashTable method to dump unencrypted data
         }
     }
-
 }
 
 // ***********************************************
@@ -237,11 +238,13 @@ size_t PassServer::size()
 
 bool PassServer::write_to_file(const char* filename)           // fixme: needs testing and block comments
 {
-    theTable->write_to_file("temp.txt");                         // Write encrypted data to passwords
 
-    theTable->clear();                                         // Clear table after data is written
+    theTable->write_to_file(filename);                         // Write encrypted data to passwords
 
-    ifstream file("temp.txt");                                // Use ifstream to create file
+   // theTable->clear();                                         // Clear table after data is written
+   cop4530::HashTable<string, string> decTable(theTable->size());   // Temp table to hold unencrypted values
+
+    ifstream file(filename);                                // Use ifstream to create file
 
     if (!file)                                                // If we cannot open it for any reason, return error
     {
@@ -261,13 +264,16 @@ bool PassServer::write_to_file(const char* filename)           // fixme: needs t
             cerr << "Error parsing line: " << line << endl;
             return false;
         }
+   //     cout << "Encrypted value: " << value << endl;
         value = decrypt(value);                             // DECRYPT value
-        theTable->insert(make_pair(key, value));      // Call user-defined method to add to hash table
+    //    cout << "Decrypted value: " << value << endl;
+        decTable.insert(make_pair(key, value));      // Call user-defined method to add to hash table
     }
     file.close();           // If file is parsed correctly, close it
 
     // Now, all passwords on the system should be decrypted
-    theTable->write_to_file(filename);                       // Overwrite previous output file with unencrypted passwords
+    decTable.write_to_file(filename);                       // Overwrite previous output file with unencrypted passwords
+
 
     return true;
 }

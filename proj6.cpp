@@ -26,13 +26,18 @@ int main ()
 
     if(myServer.find("Mason")) cout << "Successfully found user." << endl;
 
+    cout << "--------------------------------" << endl;
+
     myServer.addUser(make_pair("John", "password1"));
     myServer.addUser(make_pair("Joe", "password2"));
     myServer.addUser(make_pair("Sal", "password3"));
     myServer.addUser(make_pair("Quinn", "password4"));
     myServer.addUser(make_pair("Richard", "password5"));
 
-   // myServer.write_to_file("tempOut.txt");
+    myServer.write_to_file("tempOut.txt");
+    myServer.dump();
+    myServer.removeUser("Mason");
+    cout << "--------------------------------" << endl;
     myServer.dump();
 
     cout << "Routine complete. " << endl;
