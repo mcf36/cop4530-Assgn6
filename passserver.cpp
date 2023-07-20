@@ -159,11 +159,30 @@ bool PassServer::removeUser(const string& k)
     return theTable->remove(k);                               // Call template function to remove pair
 }
 
+
+// ***********************************************
+// * Name: changePassword()
+// * Description: Changes a password within the
+// *  system. If it is not present or unsuccessfully
+// *  inserted, return false and true otherwise.
+// * Author: Mason Finnell
+// * Date: 19 July 2023
+// * References: Data Structures and Algorithms,
+// *   4th Edition, Mark A. Weiss
+// *   Dr. David A. Gaitros.
+// ***********************************************
+
 bool PassServer::changePassword(const pair<string, string>& p, const string& newpassword)
 {
-    // Implement changing an existing user's password
-    // Encrypt both old and new passwords before interacting with the hash table
-    // Return true if successful, false otherwise
+    auto myPair = p;                      // Copy of argument pair to be modified
+    myPair.second = encrypt(p.second);               // Need to encrypt our password before comparing it in the table
+
+    if(!theTable->match(myPair)) return false;       // If the pair isn't in the table, we cannot change the password
+
+    myPair.second = encrypt(newpassword);            // Updating the pair's value to encrypted new password before insert
+
+    if(!theTable->insert(myPair)) return false;      // HashTable insert method will update the password
+    else return true;                                   // If everything executed properly, return true
 }
 
 bool PassServer::find(const string& user)
@@ -198,8 +217,9 @@ bool PassServer::write_to_file(const char* filename)
 }
 
 // ***********************************************
-// * Name: size()
-// * Description: Returns number of users on server.
+// * Name: encrypt(const string& str)
+// * Description: Private member that encodes a
+// *  string in base64 encoding.
 // * Author: Mason Finnell
 // * Date: 19 July 2023
 // * References: Data Structures and Algorithms,
@@ -209,11 +229,35 @@ bool PassServer::write_to_file(const char* filename)
 
 string PassServer::encrypt(const string& str)
 {
-    BYTE valueIn[100];                                        // Temp BYTE values for encryption
+    BYTE valueIn[100];                                                    // Temp BYTE values for encryption
     BYTE valueOut[100];
 
-    strcpy(valueIn, str.c_str());                   // Copy unencrypted password to BYTE array
-    base64_encode(valueIn, valueOut, strlen(valueIn), 1);   // Encode password before adding it
+    strcpy(valueIn, str.c_str());                             // Copy unencrypted password to BYTE array
+    base64_encode(valueIn, valueOut, strlen(valueIn), 1);   // Encode password
 
-    return valueOut;                                     // Return encrypted string
+    return valueOut;                                                      // Return encrypted string
+}
+
+
+// ***********************************************
+// * Name: decrypt(const string& str)
+// * Description: Private member that decodes a
+// *  string from base64 encoding. Not required for
+// *  assignment.
+// * Author: Mason Finnell
+// * Date: 19 July 2023
+// * References: Data Structures and Algorithms,
+// *   4th Edition, Mark A. Weiss
+// *   Dr. David A. Gaitros.
+// ***********************************************
+
+string PassServer::decrypt(const string& str)
+{
+    BYTE valueIn[100];                                                   // Temp BYTE values for decryption
+    BYTE valueOut[100];
+
+    strcpy(valueIn, str.c_str());                            // Copy unencrypted password to BYTE array
+    base64_decode(valueIn, valueOut, strlen(valueIn));   // Decode password
+
+    return valueOut;                                                    // Return decrypted string
 }
