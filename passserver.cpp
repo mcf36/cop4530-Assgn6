@@ -210,12 +210,15 @@ void PassServer::dump()                                     // fixme: needs test
         cout << "ERROR: Could not write to file." << endl;
         return;
     }
-else {
+    else
+    {
         if (!decTable.load("testFile.txt"))       // Load unencrypted file into PassServer
         {
             cout << "ERROR: Could not load file." << endl;
             return;
-        } else {
+        }
+        else
+        {
             decTable.dump();                                     // Use HashTable method to dump unencrypted data
         }
     }
@@ -264,9 +267,8 @@ bool PassServer::write_to_file(const char* filename)           // fixme: needs t
             cerr << "Error parsing line: " << line << endl;
             return false;
         }
-   //     cout << "Encrypted value: " << value << endl;
         value = decrypt(value);                             // DECRYPT value
-    //    cout << "Decrypted value: " << value << endl;
+
         decTable.insert(make_pair(key, value));      // Call user-defined method to add to hash table
     }
     file.close();           // If file is parsed correctly, close it
@@ -291,8 +293,8 @@ bool PassServer::write_to_file(const char* filename)           // fixme: needs t
 
 string PassServer::encrypt(const string& str)
 {
-    BYTE valueIn[str.size()];                                                    // Temp BYTE values for encryption
-    BYTE valueOut[str.size()];
+    BYTE valueIn[50];                                                    // Temp BYTE values for encryption
+    BYTE valueOut[50];
 
     strcpy(valueIn, str.c_str());                             // Copy unencrypted password to BYTE array
     base64_encode(valueIn, valueOut, strlen(valueIn), 1);   // Encode password
@@ -319,7 +321,7 @@ string PassServer::decrypt(const string& str)
     BYTE valueOut[str.size()];
 
     strcpy(valueIn, str.c_str());                            // Copy unencrypted password to BYTE array
-    base64_decode(valueIn, valueOut, strlen(valueIn));   // Decode password
+    base64_decode(valueIn, valueOut, str.length());   // Decode password
 
     return valueOut;                                                    // Return decrypted string
 }

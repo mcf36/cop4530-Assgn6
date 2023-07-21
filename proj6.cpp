@@ -20,7 +20,7 @@ void Menu()                                             // Displays input option
 
 int main ()
 {
-    PassServer myServer;
+/*    PassServer myServer;
 
     if(myServer.addUser(make_pair("Mason", "password0"))) cout << "Successfully added user." << endl;
 
@@ -39,8 +39,119 @@ int main ()
     myServer.removeUser("Mason");
     cout << "--------------------------------" << endl;
     myServer.dump();
+    myServer.removeUser("John");
+    cout << "--------------------------------" << endl;
+    myServer.dump();
 
-    cout << "Routine complete. " << endl;
+
+    cout << "Routine complete. " << endl;       */
+
+    PassServer myServer;                        // Server object
+    string inStr;                               // Input string
+
+    while(inStr != "x") {
+        Menu();                                 // Display menu
+        cin >> inStr;
+
+        if (inStr == "l")                       // Load a file
+        {
+            string fileStr;
+            cout << "Enter name of file to load: ";
+            cin >> fileStr;
+
+            if(myServer.load(fileStr.c_str()))
+                cout << "File loaded successfully. Returning to menu." << endl;
+            else
+                cout << "ERROR: Could not load data file." << endl;
+        }
+        else if(inStr == "a")                   // Add a user
+        {
+            string user, pass;                  // Temp strings to hold input for username and password
+            cout << "Enter a username: ";
+            cin >> user;
+            cout << "Enter a password: ";
+            cin >> pass;
+
+            if(myServer.addUser(make_pair(user, pass)))             // Checking if we successfully added user
+                cout << "User added successfully. Returning to menu." << endl;
+            else
+                cout << "ERROR: Could not add user to server." << endl;
+        }
+        else if(inStr == "r")                   // Remove a user
+        {
+            string remUser;
+            cout << "Enter name of user to remove: ";
+            cin >> remUser;
+
+            if(myServer.removeUser(remUser))
+                cout << "User removed successfully. Returning to menu." << endl;
+            else
+                cout << "ERROR: Could not remove user from server." << endl;
+        }
+        else if(inStr == "c")                   // Change a password
+        {
+            string chgUser;
+            cout << "Enter name of user to modify: ";
+            cin >> chgUser;
+
+            if(myServer.find(chgUser))
+            {
+                string oldPass, newPass;
+                cout << "Enter old password for verification: ";
+                cin >> oldPass;
+
+                cout << "Enter new password: ";
+                cin >> newPass;
+
+                if(myServer.changePassword(make_pair(chgUser, oldPass), newPass))
+                    cout << "Password changed successfully. Returning to menu." << endl;
+                else
+                    cout << "ERROR: Invalid password." << endl;
+            }
+            else cout << "ERROR: Could not find user." << endl;
+        }
+        else if (inStr == "f")                       // Find a user
+        {
+            string findStr;
+            cout << "Enter name of user in the server: ";
+            cin >> findStr;
+
+            if(myServer.find(findStr))
+                cout << "User is on the server. Returning to menu." << endl;
+            else
+                cout << "ERROR: Could not find user." << endl;
+        }
+        else if (inStr == "d")                       // Dump unencrypted contents of the server
+        {
+            cout << "Server List: " << endl;
+            cout << "----------------------" << endl;
+            myServer.dump();
+        }
+        else if (inStr == "s")                       // Return number of user/password pairs on server
+        {
+            cout << "Server Size: " << myServer.size() << endl;
+            cout << "Returning to menu." << endl;
+        }
+        else if (inStr == "w")                       // Write server contents to a file
+        {
+            string fileStr;
+            cout << "Enter name of file to be written: ";
+            cin >> fileStr;
+
+            if(myServer.write_to_file(fileStr.c_str()))
+                cout << "File written successfully. Returning to menu." << endl;
+            else
+                cout << "ERROR: Could not write data file." << endl;
+        }
+        else if (inStr == "x")                      // Exit menu.
+        {
+            break;
+        }
+        else
+        {
+            cout << "ERROR: Invalid input." << endl;
+        }
+    }
 
     return 0;
 }
